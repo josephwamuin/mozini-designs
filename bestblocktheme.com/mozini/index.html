@@ -433,6 +433,30 @@ button { cursor: pointer; font-family: inherit; }
 .port-slot h4 { font-family: var(--font-h); font-size: 0.92rem; color: var(--ivory); margin-bottom: 6px; }
 .port-slot p { font-family: var(--font-b); font-size: 0.78rem; color: rgba(247,244,238,0.45); font-style: italic; }
 .portfolio-cta { margin-top: 48px; text-align: center; }
+/* Portfolio cards that contain real photos */
+.port-slot--img { padding: 0; align-items: stretch; justify-content: flex-end; }
+.port-slot--img img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  transition: transform 0.4s;
+}
+.port-slot--img:hover img { transform: scale(1.04); }
+.port-slot--img .port-caption {
+  position: relative; z-index: 1;
+  padding: 20px 22px 22px;
+  background: linear-gradient(transparent, rgba(22,57,68,0.94));
+  width: 100%;
+}
+.port-slot--img .port-caption h4 {
+  font-family: var(--font-h); font-size: 0.92rem;
+  color: var(--ivory); margin-bottom: 4px;
+}
+.port-slot--img .port-caption p {
+  font-family: var(--font-b); font-size: 0.76rem;
+  color: rgba(247,244,238,0.65);
+}
+.port-slot--img .port-slot-num { color: rgba(247,244,238,0.22); }
 @media (max-width: 768px) { .portfolio-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 480px) { .portfolio-grid { grid-template-columns: 1fr; } }
 
@@ -476,7 +500,14 @@ button { cursor: pointer; font-family: inherit; }
   padding: 0 16px;
 }
 /* IMAGE PLACEHOLDER COMMENT: services 5-8 show placeholder bars above the title.
-   Replace each .svc-img-ph div with a real <img> tag once Mozini product photos are ready. */
+   Replace each .svc-img-ph div with a real <img class="svc-img-real"> once Mozini product photos are ready. */
+.svc-img-real {
+  width: 100%; height: 80px;
+  object-fit: cover; object-position: center;
+  margin-bottom: 12px;
+  border-left: 3px solid var(--gold);
+  display: block;
+}
 .svc-cta .btn { padding: 10px 20px; font-size: 0.76rem; white-space: nowrap; }
 @media (max-width: 768px) {
   .svc-row { grid-template-columns: 48px 1fr; gap: 16px; padding: 24px 20px; }
@@ -878,63 +909,75 @@ button { cursor: pointer; font-family: inherit; }
     <div class="divider-gold"></div>
 
     <div class="portfolio-notice">
-      <strong>Coming Soon:</strong> Real Mozini project photography is being prepared. These slots will be replaced with actual client work — including NHC pilot imagery and other activations — once assets are received from the client.
+      <strong>In Progress:</strong> Three portfolio cards now show real photography. Remaining slots will be replaced with Mozini client work — including NHC pilot imagery — once assets are received from the client.
     </div>
 
     <div class="portfolio-grid">
 
-      <div class="port-slot">
+      <!-- image: images/message-desk-list-professional-page.jpg -->
+      <div class="port-slot port-slot--img">
         <div class="port-slot-num">01</div>
-        <div class="port-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <img src="images/message-desk-list-professional-page.jpg"
+             alt="Gift box beside a laptop and coffee mug on a desk — Recognition Kits"
+             loading="lazy">
+        <div class="port-caption">
+          <h4>Recognition Kits</h4>
+          <p>Employee Engagement Programme</p>
         </div>
-        <h4>Recognition Kits</h4>
-        <p>Employee Engagement Programme<br>— client photo coming soon —</p>
       </div>
 
+      <!-- PLACEHOLDER: search "branded corporate merchandise flat lay — polo shirt mug notebook" -->
       <div class="port-slot">
         <div class="port-slot-num">02</div>
         <div class="port-icon">
           <svg viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         </div>
         <h4>Branded Merchandise</h4>
-        <p>Milestone Recognition Package<br>— client photo coming soon —</p>
+        <p>Milestone Recognition Package<br><em>— photo coming: "branded corporate merchandise flat lay"</em></p>
       </div>
 
-      <div class="port-slot">
+      <!-- image: images/black-friday-gifts-arrangement.jpg -->
+      <div class="port-slot port-slot--img">
         <div class="port-slot-num">03</div>
-        <div class="port-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <img src="images/black-friday-gifts-arrangement.jpg"
+             alt="Luxury black gift boxes with ribbons in gold shopping carts on dark background — Corporate Gifting"
+             loading="lazy">
+        <div class="port-caption">
+          <h4>Corporate Gifting</h4>
+          <p>Client &amp; Partner Recognition</p>
         </div>
-        <h4>Corporate Gifting</h4>
-        <p>Client &amp; Partner Recognition<br>— client photo coming soon —</p>
       </div>
 
+      <!-- PLACEHOLDER: search "branded polo shirt corporate uniform photography" -->
       <div class="port-slot">
         <div class="port-slot-num">04</div>
         <div class="port-icon">
           <svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
         </div>
         <h4>Branded Apparel</h4>
-        <p>Uniform &amp; Kit Production<br>— client photo coming soon —</p>
+        <p>Uniform &amp; Kit Production<br><em>— photo coming: "branded polo shirt / corporate uniform"</em></p>
       </div>
 
-      <div class="port-slot">
+      <!-- image: images/people-taking-part-high-protocol-event.jpg -->
+      <div class="port-slot port-slot--img">
         <div class="port-slot-num">05</div>
-        <div class="port-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <img src="images/people-taking-part-high-protocol-event.jpg"
+             alt="Elegant corporate event venue — long boardroom table with documents, glassware and warm lighting"
+             loading="lazy">
+        <div class="port-caption">
+          <h4>Activation Booths</h4>
+          <p>Corporate Events &amp; Campaigns</p>
         </div>
-        <h4>Activation Booths</h4>
-        <p>Corporate Events &amp; Campaigns<br>— client photo coming soon —</p>
       </div>
 
+      <!-- PLACEHOLDER: search "corporate team celebration employee engagement event photography" -->
       <div class="port-slot">
         <div class="port-slot-num">06</div>
         <div class="port-icon">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         </div>
         <h4>Culture Campaigns</h4>
-        <p>Seasonal &amp; CSR Activations<br>— client photo coming soon —</p>
+        <p>Seasonal &amp; CSR Activations<br><em>— photo coming: "corporate team celebration / CSR activation"</em></p>
       </div>
 
     </div>
@@ -988,6 +1031,11 @@ button { cursor: pointer; font-family: inherit; }
       <div class="svc-row">
         <div class="svc-num">04</div>
         <div class="svc-content">
+          <!-- image: images/black-friday-gifts-arrangement.jpg -->
+          <img class="svc-img-real"
+               src="images/black-friday-gifts-arrangement.jpg"
+               alt="Premium black gift boxes in gold carts — Client and Partner gifting"
+               loading="lazy">
           <h3>Client &amp; Partner Recognition</h3>
           <p>Premium hampers, closing gifts, and branded tech sets for client and partner relationships &amp; contract signing.</p>
         </div>
@@ -1000,7 +1048,8 @@ button { cursor: pointer; font-family: inherit; }
       <div class="svc-row">
         <div class="svc-num">05</div>
         <div class="svc-content">
-          <div class="svc-img-ph" aria-hidden="true">[Branded Apparel &amp; Merchandise — Mozini product photo to be added]</div>
+          <!-- PLACEHOLDER: search "branded polo shirt corporate uniform photography" — replace this div with <img class="svc-img-real"> -->
+          <div class="svc-img-ph" aria-hidden="true">Branded Apparel &amp; Merchandise — photo coming: "branded polo shirt / corporate uniform"</div>
           <h3>Branded Apparel &amp; Merchandise</h3>
           <p>Uniforms, kits, stationery, and lifestyle wear produced through our modular activation network.</p>
         </div>
@@ -1010,7 +1059,8 @@ button { cursor: pointer; font-family: inherit; }
       <div class="svc-row">
         <div class="svc-num">06</div>
         <div class="svc-content">
-          <div class="svc-img-ph" aria-hidden="true">[Portable Activation Booths — Mozini product photo to be added]</div>
+          <!-- PLACEHOLDER: search "corporate activation booth exhibition stand branded event" — replace with <img class="svc-img-real"> -->
+          <div class="svc-img-ph" aria-hidden="true">Portable Activation Booths — photo coming: "corporate activation booth exhibition stand"</div>
           <h3>Portable Activation Booths</h3>
           <p>Digital, interactive, AR/VR-ready booths for corporate events and campaigns.</p>
         </div>
@@ -1020,7 +1070,8 @@ button { cursor: pointer; font-family: inherit; }
       <div class="svc-row">
         <div class="svc-num">07</div>
         <div class="svc-content">
-          <div class="svc-img-ph" aria-hidden="true">[Eco-Tech Accessories — Mozini product photo to be added]</div>
+          <!-- PLACEHOLDER: search "solar charger product sustainable tech gadgets flat lay" — replace with <img class="svc-img-real"> -->
+          <div class="svc-img-ph" aria-hidden="true">Eco-Tech Accessories — photo coming: "solar charger / sustainable tech gadgets"</div>
           <h3>Eco-Tech Accessories</h3>
           <p>Solar chargers, smart lamps, and wireless earbuds sourced through our sustainable supplier network.</p>
         </div>
@@ -1030,7 +1081,8 @@ button { cursor: pointer; font-family: inherit; }
       <div class="svc-row">
         <div class="svc-num">08</div>
         <div class="svc-content">
-          <div class="svc-img-ph" aria-hidden="true">[Corporate Campaign Packages — Mozini product photo to be added]</div>
+          <!-- PLACEHOLDER: search "corporate wellness CSR campaign branded hamper seasonal gift" — replace with <img class="svc-img-real"> -->
+          <div class="svc-img-ph" aria-hidden="true">Corporate Campaign Packages — photo coming: "corporate wellness / CSR branded gift"</div>
           <h3>Corporate Campaign Packages</h3>
           <p>Seasonal, CSR-linked, and wellness activation packages.</p>
         </div>
@@ -1105,8 +1157,8 @@ button { cursor: pointer; font-family: inherit; }
       <article class="blog-card">
         <div class="blog-thumb">
           <a href="social-media-trends-that-dominate-this-year/index.html">
-            <img src="wp-content/uploads/sites/42/2026/03/piotr-cichosz-NhRk-907Ayc-unsplash.webp"
-                 alt="Social Media Trends That Dominate This Year" loading="lazy">
+            <img src="images/social-media-marketing.jpg"
+                 alt="Young woman using smartphone with social media application icons floating around her" loading="lazy">
           </a>
         </div>
         <div class="blog-body">
@@ -1118,6 +1170,9 @@ button { cursor: pointer; font-family: inherit; }
         </div>
       </article>
 
+      <!-- PLACEHOLDER: 2001_i039_031_branding_isometric_concept_icons-14.jpg was skipped —
+           purple/blue isometric illustration clashes with teal/gold photographic style.
+           Search "brand storytelling corporate team photography" for a replacement. -->
       <article class="blog-card">
         <div class="blog-thumb">
           <a href="power-of-storytelling-in-brand-identity/index.html">
