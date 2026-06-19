@@ -1,0 +1,121 @@
+#gutenverse-demo-header {
+    background-color: #1c1d21;
+    width: 100%;
+    min-height: 72px;
+    padding: 10px 40px;
+    font-size: 12px;
+    justify-content: space-between;
+    position: absolute;
+    z-index: 999;
+  }
+  
+  #gutenverse-demo-header,
+  #gutenverse-demo-header .header-wrapper,
+  #gutenverse-demo-header a {
+    display: flex;
+    align-items: center;
+  }
+  
+  #gutenverse-demo-header .header-wrapper {
+    justify-content: center;
+  }
+  
+  #gutenverse-demo-header span {
+    color: #fff;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  #gutenverse-demo-header span.tagline {
+    padding-left: 20px;
+    border-left: 1px solid #ffffff2e;
+    font-size: 13px;
+  }
+  
+  #gutenverse-demo-header img.logo {
+    min-width: 111px;
+    height: 30px;
+  }
+  
+  #gutenverse-demo-header .demo-button a {
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin: 0 10px;
+    text-decoration: none;
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.6;
+    letter-spacing: normal;
+    opacity: 1;
+    transition: opacity 0.75 ease-in-out;
+  }
+  
+  #gutenverse-demo-header .demo-button a:hover {
+    opacity: 0.9;
+  }
+  
+  #gutenverse-demo-header .demo-button.try a {
+    background-image: linear-gradient(to right, #3f3bf7, #4c60fc);
+    color: #fff;
+  }
+
+  #gutenverse-demo-header .demo-button.check a {
+    border: solid 1px #fff;
+    background: transparent;
+    padding: 7px 16px;
+    color: #fff;
+  }
+
+  #gutenverse-demo-header .demo-button.pro a {
+    background-image: linear-gradient(95deg, #b851ff 1%, #4569ff 47%, #4569ff 60%, #62cef6 99%);
+    color: #fff;
+  }
+  
+  #demo-frame {
+    margin: 0 auto;
+    display: block;
+    position: fixed;
+    border: none;
+    top: 72px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 72px);
+  }
+  
+  @media only screen and (max-width: 1086px) {
+    #gutenverse-demo-header span.tagline {
+      display: none;
+    }
+  }
+  
+  @media only screen and (max-width: 628px) {
+    #gutenverse-demo-header {
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+  
+    #gutenverse-demo-header img.logo {
+      margin-bottom: 10px;
+    }
+  
+    #gutenverse-demo-header .header-wrapper {
+      width: 100%;
+    }
+  
+    #demo-frame {
+      top: 110px;
+    }
+  }
+  
+  @media only screen and (max-width: 428px) {
+    #gutenverse-demo-header .demo-button a {
+      font-size: 9px;
+    }
+  }
