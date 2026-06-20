@@ -222,19 +222,30 @@ button { cursor: pointer; font-family: inherit; }
   position: relative;
   overflow: hidden;
 }
-.hero::after {
-  content: '';
-  position: absolute; top: 0; right: 0;
-  width: 42%;  height: 100%;
-  background: var(--teal-dark);
-  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
-  opacity: 0.55;
-  pointer-events: none;
-}
 .hero-inner {
   position: relative; z-index: 1;
   max-width: 860px;
   padding: 72px 28px;
+}
+.hero-visual {
+  position: absolute; top: 0; right: 0;
+  width: 42%; height: 100%;
+  z-index: 0;
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+  pointer-events: none;
+}
+.hero-visual img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transform: scaleX(-1);
+}
+.hero-visual::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(22, 57, 68, 0.25);
+  z-index: 1;
 }
 .hero-tagline {
   font-family: var(--font-h);
@@ -265,6 +276,7 @@ button { cursor: pointer; font-family: inherit; }
   color: rgba(247,244,238,0.4);
   font-family: var(--font-b);
   font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  z-index: 2;
 }
 .hero-scroll-line::after {
   content: '';
@@ -276,8 +288,8 @@ button { cursor: pointer; font-family: inherit; }
   0%,100% { opacity: 0.3; }
   50%      { opacity: 1; }
 }
-@media (max-width: 600px) {
-  .hero::after { display: none; }
+@media (max-width: 768px) {
+  .hero-visual { display: none; }
   .hero-scroll-line { display: none; }
 }
 
@@ -464,55 +476,123 @@ button { cursor: pointer; font-family: inherit; }
    SERVICES
    ============================================================ */
 .services-section { background: var(--ivory); padding: 96px 0; }
-.services-header { margin-bottom: 0; }
+.services-header { margin-bottom: 56px; }
 .services-header .section-label { color: rgba(31,78,92,0.6); }
-.services-list { margin-top: 0; }
-.svc-row {
+
+.services-grid {
   display: grid;
-  grid-template-columns: 72px 1fr auto;
-  align-items: center;
-  gap: 32px;
-  padding: 32px 40px;
-  border-bottom: 1px solid rgba(31,78,92,0.1);
-  transition: background 0.22s;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  align-items: stretch;
 }
-.svc-row:first-child { border-top: 1px solid rgba(31,78,92,0.1); }
-.svc-row:hover { background: rgba(31,78,92,0.04); }
-.svc-num {
+
+/* ── Card base ── */
+.svc-card {
+  background: #fff;
+  border-radius: 6px;
+  border-top: 3px solid var(--gold);
+  padding: 36px 32px 32px;
+  box-shadow: 0 4px 28px rgba(31,78,92,0.12);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* ── Diagonal accent — top-right triangle, consistent size ── */
+.svc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 148px; height: 136px;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+  transform-origin: top right;
+  transition: transform 0.28s ease;
+  z-index: 0;
+}
+.svc-card:nth-child(odd)::before  { background: var(--teal); }
+.svc-card:nth-child(even)::before { background: var(--gold); }
+
+/* ── Scroll animation ── */
+.svc-card.visible { animation: svcEnter 0.55s ease forwards; }
+@keyframes svcEnter { to { opacity: 1; transform: translateY(0); } }
+
+/* ── Hover: lift + shadow + diagonal extends ── */
+.svc-card.visible:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 52px rgba(31,78,92,0.19);
+}
+.svc-card.visible:hover::before { transform: scale(1.28); }
+
+/* ── Number badge — over the diagonal corner ── */
+.svc-number {
   font-family: var(--font-h);
-  font-size: 2.4rem; font-weight: 800;
-  color: rgba(31,78,92,0.1);
+  font-size: 2.2rem;
+  font-weight: 800;
   line-height: 1;
+  position: absolute;
+  top: 18px; right: 16px;
+  z-index: 1;
+  letter-spacing: -0.02em;
 }
-.svc-content h3 { font-family: var(--font-h); font-size: 1.05rem; color: var(--teal); margin-bottom: 8px; }
-.svc-content p { font-family: var(--font-b); font-size: 0.92rem; color: var(--charcoal); line-height: 1.65; max-width: 640px; }
-.svc-img-ph {
-  width: 100%; height: 64px;
-  background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 100%);
-  border-left: 3px solid var(--gold);
-  display: flex; align-items: center; justify-content: center;
+/* Gold on teal (odd) — warm accent on dark */
+.svc-card:nth-child(odd)  .svc-number { color: var(--gold); }
+/* Ivory on gold (even) — light on warm, cleanest contrast */
+.svc-card:nth-child(even) .svc-number { color: var(--ivory); }
+
+/* ── Icon ── */
+.svc-icon {
+  width: 28px; height: 28px;
+  color: var(--gold);
+  margin-bottom: 40px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.svc-card.visible:hover .svc-icon { color: var(--teal); transform: scale(1.12); }
+
+/* ── Text ── */
+.svc-name {
+  font-family: var(--font-h);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--teal);
   margin-bottom: 12px;
+  line-height: 1.3;
+  position: relative; z-index: 1;
+}
+.svc-desc {
   font-family: var(--font-b);
-  font-size: 0.72rem;
-  color: rgba(247,244,238,0.45);
-  font-style: italic;
-  text-align: center;
-  padding: 0 16px;
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  line-height: 1.7;
+  flex-grow: 1;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
 }
-/* IMAGE PLACEHOLDER COMMENT: services 5-8 show placeholder bars above the title.
-   Replace each .svc-img-ph div with a real <img class="svc-img-real"> once Mozini product photos are ready. */
-.svc-img-real {
-  width: 100%; height: 80px;
-  object-fit: cover; object-position: center;
-  margin-bottom: 12px;
-  border-left: 3px solid var(--gold);
-  display: block;
-}
-.svc-cta .btn { padding: 10px 20px; font-size: 0.76rem; white-space: nowrap; }
+.svc-card .btn { align-self: flex-start; padding: 10px 22px; font-size: 0.78rem; position: relative; z-index: 1; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) { .services-grid { gap: 20px; } }
 @media (max-width: 768px) {
-  .svc-row { grid-template-columns: 48px 1fr; gap: 16px; padding: 24px 20px; }
-  .svc-cta { grid-column: 1/-1; }
-  .svc-num { font-size: 1.8rem; }
+  .svc-card { padding: 30px 22px 24px; }
+  .svc-card::before { width: 120px; height: 110px; }
+  .svc-number { font-size: 1.9rem; top: 14px; right: 12px; }
+}
+@media (max-width: 560px) {
+  .services-grid { grid-template-columns: 1fr; }
+  .svc-card { padding: 28px 24px 24px; }
+  .svc-card::before { width: 116px; height: 106px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-card { opacity: 1; transform: none; transition: none; }
+  .svc-card.visible { animation: none; }
+  .svc-card.visible:hover { transform: none; }
+  .svc-card.visible:hover::before { transform: none; }
 }
 
 /* ============================================================
@@ -582,7 +662,8 @@ button { cursor: pointer; font-family: inherit; }
 .blog-more::after { content: '→'; }
 .blog-card:hover .blog-more { gap: 8px; }
 .blog-cta { margin-top: 48px; text-align: center; }
-@media (max-width: 768px) { .blog-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .blog-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 500px) { .blog-grid { grid-template-columns: 1fr; } }
 
 /* ============================================================
    QUOTE FORM
@@ -703,23 +784,39 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
 
 /* ============================================================
-   WHATSAPP BAR — bottom of page only
+   WHATSAPP FLOAT — appears when quote section enters view
    ============================================================ */
-.whatsapp-bar {
-  background: #25D366;
-  padding: 16px 24px;
-  display: flex; align-items: center; justify-content: center;
+.whatsapp-float {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(16px) scale(0.92);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.whatsapp-bar a {
+.whatsapp-float.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.whatsapp-float a {
   display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-h);
-  font-size: 0.88rem; font-weight: 700;
+  background: #25D366;
   color: #fff;
+  padding: 13px 22px;
+  border-radius: 50px;
+  font-family: var(--font-h);
+  font-size: 0.84rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em;
-  transition: opacity 0.2s;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  transition: box-shadow 0.22s, transform 0.22s;
 }
-.whatsapp-bar a:hover { opacity: 0.88; }
-.whatsapp-bar svg { width: 22px; height: 22px; fill: #fff; flex-shrink: 0; }
+.whatsapp-float a:hover {
+  box-shadow: 0 6px 28px rgba(37,211,102,0.6);
+  transform: translateY(-2px);
+}
+.whatsapp-float svg { width: 22px; height: 22px; fill: #fff; flex-shrink: 0; }
 
 /* ============================================================
    PORTFOLIO SCROLL GALLERY — preserved from original
@@ -756,6 +853,84 @@ button { cursor: pointer; font-family: inherit; }
   .mozini-gallery-img-wrap { height: 100% !important; }
   .mozini-gallery-dots { display: none !important; }
 }
+/* ============================================================
+   GLOBAL RESPONSIVE — section padding scale
+   ============================================================ */
+@media (max-width: 768px) {
+  .container { padding: 0 22px; }
+  .intro-section, .vmv-section, .portfolio-section,
+  .services-section, .process-section, .blog-section,
+  .quote-section, .footer-cta { padding: 64px 0; }
+  .stats-section { padding: 48px 0; }
+  .site-footer { padding-top: 52px; }
+  .services-header { margin-bottom: 40px; }
+  .vmv-header, .services-header { margin-bottom: 40px; }
+  .blog-grid { margin-top: 40px; }
+  .process-grid { margin-top: 40px; }
+  .portfolio-notice { margin-bottom: 32px; }
+  .portfolio-cta { margin-top: 32px; }
+  .blog-cta { margin-top: 32px; }
+  .footer-grid { gap: 32px; padding-bottom: 40px; }
+}
+@media (max-width: 480px) {
+  .container { padding: 0 18px; }
+  .intro-section, .vmv-section, .portfolio-section,
+  .services-section, .process-section, .blog-section,
+  .quote-section, .footer-cta { padding: 48px 0; }
+  .vmv-card { padding: 28px 22px; }
+  .intro-grid { gap: 24px; }
+}
+
+/* ── HERO mobile ── */
+@media (max-width: 768px) {
+  .hero-inner { max-width: 100%; padding: 56px 0 64px; }
+  .hero-tagline { font-size: clamp(2.2rem, 6.5vw, 3.2rem); }
+  .hero-sub { max-width: 100%; }
+}
+@media (max-width: 480px) {
+  .hero-inner { padding: 44px 0 52px; }
+  .hero-tagline { font-size: clamp(1.9rem, 8vw, 2.4rem); }
+  .hero-sub { font-size: 0.95rem; margin-bottom: 32px; }
+  .hero-actions { gap: 12px; }
+  .hero-actions .btn { padding: 12px 24px; }
+}
+
+/* ── NAV mobile enhancements ── */
+@media (max-width: 900px) {
+  .site-nav { padding: 0 20px; }
+  .nav-logo img { height: 46px; }
+  .nav-menu.open { padding: 20px 20px; }
+}
+
+/* ── STATS mobile ── */
+@media (max-width: 600px) {
+  .stat-item { padding: 24px 20px; }
+  .stat-num { font-size: clamp(2.2rem, 8vw, 3rem); }
+}
+
+/* ── PORTFOLIO grid mobile ── */
+@media (max-width: 480px) {
+  .port-slot { aspect-ratio: 3/2; }
+}
+
+/* ── QUOTE form mobile ── */
+@media (max-width: 640px) {
+  .quote-intro { margin-bottom: 36px; }
+}
+
+/* ── FOOTER bottom mobile ── */
+@media (max-width: 480px) {
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* ── WHATSAPP float mobile ── */
+@media (max-width: 480px) {
+  .whatsapp-float { bottom: 16px; right: 12px; }
+  .whatsapp-float a { padding: 11px 16px; font-size: 0.76rem; letter-spacing: 0.04em; gap: 8px; }
+  .whatsapp-float svg { width: 19px; height: 19px; }
+}
+
   </style>
 </head>
 
@@ -771,12 +946,12 @@ button { cursor: pointer; font-family: inherit; }
   </a>
 
   <ul class="nav-menu" id="nav-menu">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about/index.html">About</a></li>
-    <li><a href="services/index.html">Services</a></li>
-    <li><a href="projects/index.html">Projects</a></li>
-    <li><a href="blog/index.html">Blog</a></li>
-    <li><a href="contact/index.html">Contact</a></li>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#quote">Contact</a></li>
   </ul>
 
   <div class="nav-cta">
@@ -794,7 +969,6 @@ button { cursor: pointer; font-family: inherit; }
 <section class="hero" id="home">
   <div class="container">
     <div class="hero-inner">
-      <span class="section-label">Nairobi, Kenya — IPS Building, Kimathi Street</span>
       <h1 class="hero-tagline">
         Your Partner in<br>
         <span class="gold">Corporate Culture</span><br>
@@ -808,6 +982,9 @@ button { cursor: pointer; font-family: inherit; }
         <a href="#services" class="btn btn-outline">Our Services</a>
       </div>
     </div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <img src="images/FS02-IMAGE.jpg" alt="">
   </div>
   <div class="hero-scroll-line" aria-hidden="true">Scroll</div>
 </section>
@@ -909,7 +1086,7 @@ button { cursor: pointer; font-family: inherit; }
     <div class="divider-gold"></div>
 
     <div class="portfolio-notice">
-      <strong>In Progress:</strong> Three portfolio cards now show real photography. Remaining slots will be replaced with Mozini client work — including NHC pilot imagery — once assets are received from the client.
+      A selection of projects from our portfolio — spanning recognition programmes, branded merchandise, corporate activations, and culture-driven experiences delivered for organisations across Kenya.
     </div>
 
     <div class="portfolio-grid">
@@ -1005,94 +1182,70 @@ button { cursor: pointer; font-family: inherit; }
       <div class="divider-gold"></div>
     </div>
 
-    <div class="services-list">
+    <div class="services-grid">
 
-      <div class="svc-row">
-        <div class="svc-num">01</div>
-        <div class="svc-content">
-          <h3>Mozini Culture OS</h3>
-          <p>A subscription dashboard giving HR teams real-time visibility into recognition activity, sentiment, and engagement ROI.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <div class="svc-number">01</div>
+        <h3 class="svc-name">Mozini Culture OS</h3>
+        <p class="svc-desc">A subscription dashboard giving HR teams real-time visibility into recognition activity, sentiment, and engagement ROI.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">02</div>
-        <div class="svc-content">
-          <h3>Recognition-as-a-Service (RaaS)</h3>
-          <p>Curated monthly or quarterly recognition kits delivered to staff &amp; clients, triggered and tracked through the platform.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        <div class="svc-number">02</div>
+        <h3 class="svc-name">Recognition-as-a-Service (RaaS)</h3>
+        <p class="svc-desc">Curated monthly or quarterly recognition kits delivered to staff &amp; clients, triggered and tracked through the platform.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">03</div>
-        <div class="svc-content">
-          <h3>Milestone Recognition Packages</h3>
-          <p>Branded packages for birthdays, promotions, retirements, and service anniversaries.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <div class="svc-number">03</div>
+        <h3 class="svc-name">Milestone Recognition Packages</h3>
+        <p class="svc-desc">Branded packages for birthdays, promotions, retirements, and service anniversaries.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">04</div>
-        <div class="svc-content">
-          <!-- image: images/black-friday-gifts-arrangement.jpg -->
-          <img class="svc-img-real"
-               src="images/black-friday-gifts-arrangement.jpg"
-               alt="Premium black gift boxes in gold carts — Client and Partner gifting"
-               loading="lazy">
-          <h3>Client &amp; Partner Recognition</h3>
-          <p>Premium hampers, closing gifts, and branded tech sets for client and partner relationships &amp; contract signing.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+        <div class="svc-number">04</div>
+        <h3 class="svc-name">Client &amp; Partner Recognition</h3>
+        <p class="svc-desc">Premium hampers, closing gifts, and branded tech sets for client and partner relationships &amp; contract signing.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <!-- Services 05–08: IMAGE PLACEHOLDER BARS shown above each title.
-           Replace each .svc-img-ph with a real <img> once Mozini product photos are supplied. -->
-
-      <div class="svc-row">
-        <div class="svc-num">05</div>
-        <div class="svc-content">
-          <!-- PLACEHOLDER: search "branded polo shirt corporate uniform photography" — replace this div with <img class="svc-img-real"> -->
-          <div class="svc-img-ph" aria-hidden="true">Branded Apparel &amp; Merchandise — photo coming: "branded polo shirt / corporate uniform"</div>
-          <h3>Branded Apparel &amp; Merchandise</h3>
-          <p>Uniforms, kits, stationery, and lifestyle wear produced through our modular activation network.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.86H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.86l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>
+        <div class="svc-number">05</div>
+        <h3 class="svc-name">Branded Apparel &amp; Merchandise</h3>
+        <p class="svc-desc">Uniforms, kits, stationery, and lifestyle wear produced through our modular activation network.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">06</div>
-        <div class="svc-content">
-          <!-- PLACEHOLDER: search "corporate activation booth exhibition stand branded event" — replace with <img class="svc-img-real"> -->
-          <div class="svc-img-ph" aria-hidden="true">Portable Activation Booths — photo coming: "corporate activation booth exhibition stand"</div>
-          <h3>Portable Activation Booths</h3>
-          <p>Digital, interactive, AR/VR-ready booths for corporate events and campaigns.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg>
+        <div class="svc-number">06</div>
+        <h3 class="svc-name">Portable Activation Booths</h3>
+        <p class="svc-desc">Digital, interactive, AR/VR-ready booths for corporate events and campaigns.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">07</div>
-        <div class="svc-content">
-          <!-- PLACEHOLDER: search "solar charger product sustainable tech gadgets flat lay" — replace with <img class="svc-img-real"> -->
-          <div class="svc-img-ph" aria-hidden="true">Eco-Tech Accessories — photo coming: "solar charger / sustainable tech gadgets"</div>
-          <h3>Eco-Tech Accessories</h3>
-          <p>Solar chargers, smart lamps, and wireless earbuds sourced through our sustainable supplier network.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+        <div class="svc-number">07</div>
+        <h3 class="svc-name">Eco-Tech Accessories</h3>
+        <p class="svc-desc">Solar chargers, smart lamps, and wireless earbuds sourced through our sustainable supplier network.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
-      <div class="svc-row">
-        <div class="svc-num">08</div>
-        <div class="svc-content">
-          <!-- PLACEHOLDER: search "corporate wellness CSR campaign branded hamper seasonal gift" — replace with <img class="svc-img-real"> -->
-          <div class="svc-img-ph" aria-hidden="true">Corporate Campaign Packages — photo coming: "corporate wellness / CSR branded gift"</div>
-          <h3>Corporate Campaign Packages</h3>
-          <p>Seasonal, CSR-linked, and wellness activation packages.</p>
-        </div>
-        <div class="svc-cta"><a href="#quote" class="btn btn-gold">Get a Quote</a></div>
+      <div class="svc-card">
+        <svg class="svc-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        <div class="svc-number">08</div>
+        <h3 class="svc-name">Corporate Campaign Packages</h3>
+        <p class="svc-desc">Seasonal, CSR-linked, and wellness activation packages.</p>
+        <a href="#quote" class="btn btn-gold">Get a Quote</a>
       </div>
 
     </div>
@@ -1146,7 +1299,7 @@ button { cursor: pointer; font-family: inherit; }
 
       <article class="blog-card">
         <div class="blog-thumb">
-          <a href="the-psychology-behind-packaging-design/index.html">
+          <a href="#blog">
             <img src="wp-content/uploads/sites/42/2026/03/packaging-box.webp"
                  alt="The Psychology Behind Packaging Design" loading="lazy">
           </a>
@@ -1154,15 +1307,15 @@ button { cursor: pointer; font-family: inherit; }
         <div class="blog-body">
           <div class="blog-cat">Packaging</div>
           <h3 class="blog-ttl">
-            <a href="the-psychology-behind-packaging-design/index.html">The Psychology Behind Packaging Design</a>
+            <a href="#blog">The Psychology Behind Packaging Design</a>
           </h3>
-          <a href="the-psychology-behind-packaging-design/index.html" class="blog-more">Read More</a>
+          <a href="#blog" class="blog-more">Read More</a>
         </div>
       </article>
 
       <article class="blog-card">
         <div class="blog-thumb">
-          <a href="social-media-trends-that-dominate-this-year/index.html">
+          <a href="#blog">
             <img src="images/social-media-marketing.jpg"
                  alt="Young woman using smartphone with social media application icons floating around her" loading="lazy">
           </a>
@@ -1170,9 +1323,9 @@ button { cursor: pointer; font-family: inherit; }
         <div class="blog-body">
           <div class="blog-cat">Marketing</div>
           <h3 class="blog-ttl">
-            <a href="social-media-trends-that-dominate-this-year/index.html">Social Media Trends That Dominate This Year</a>
+            <a href="#blog">Social Media Trends That Dominate This Year</a>
           </h3>
-          <a href="social-media-trends-that-dominate-this-year/index.html" class="blog-more">Read More</a>
+          <a href="#blog" class="blog-more">Read More</a>
         </div>
       </article>
 
@@ -1181,7 +1334,7 @@ button { cursor: pointer; font-family: inherit; }
            Search "brand storytelling corporate team photography" for a replacement. -->
       <article class="blog-card">
         <div class="blog-thumb">
-          <a href="power-of-storytelling-in-brand-identity/index.html">
+          <a href="#blog">
             <img src="wp-content/uploads/sites/42/2026/03/mk-2-unsplash.webp"
                  alt="Power of Storytelling in Brand Identity" loading="lazy">
           </a>
@@ -1189,16 +1342,16 @@ button { cursor: pointer; font-family: inherit; }
         <div class="blog-body">
           <div class="blog-cat">Branding</div>
           <h3 class="blog-ttl">
-            <a href="power-of-storytelling-in-brand-identity/index.html">Power of Storytelling in Brand Identity</a>
+            <a href="#blog">Power of Storytelling in Brand Identity</a>
           </h3>
-          <a href="power-of-storytelling-in-brand-identity/index.html" class="blog-more">Read More</a>
+          <a href="#blog" class="blog-more">Read More</a>
         </div>
       </article>
 
     </div>
 
     <div class="blog-cta">
-      <a href="blog/index.html" class="btn btn-outline-teal">View All Posts</a>
+      <a href="#blog" class="btn btn-outline-teal">View All Posts</a>
     </div>
   </div>
 </section>
@@ -1382,18 +1535,18 @@ button { cursor: pointer; font-family: inherit; }
       <div class="footer-col">
         <h4>Links</h4>
         <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about/index.html">About Us</a></li>
-          <li><a href="services/index.html">Services</a></li>
-          <li><a href="projects/index.html">Our Work</a></li>
-          <li><a href="blog/index.html">Blog</a></li>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#projects">Our Work</a></li>
+          <li><a href="#blog">Blog</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="contact/index.html">Contact</a></li>
+          <li><a href="#quote">Contact</a></li>
           <li><a href="#quote">Request a Quote</a></li>
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Service</a></li>
@@ -1422,9 +1575,9 @@ button { cursor: pointer; font-family: inherit; }
 </footer>
 
 <!-- ====================================================
-     WHATSAPP BUTTON — BOTTOM OF PAGE ONLY
+     WHATSAPP FLOAT — appears on scroll to quote/contact
      ==================================================== -->
-<div class="whatsapp-bar">
+<div class="whatsapp-float" id="whatsapp-float">
   <a href="https://wa.me/254796483045?text=Hello%20Mozini%20Designs%2C%20I%20would%20like%20to%20enquire%20about%20your%20services."
      target="_blank"
      rel="noopener noreferrer"
@@ -1432,7 +1585,7 @@ button { cursor: pointer; font-family: inherit; }
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
     </svg>
-    Chat with us on WhatsApp
+    Chat on WhatsApp
   </a>
 </div>
 
@@ -1519,6 +1672,43 @@ button { cursor: pointer; font-family: inherit; }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
   onScroll();
+})();
+</script>
+
+<script>
+/* WhatsApp float — show when quote/contact section is in view */
+(function () {
+  var btn     = document.getElementById('whatsapp-float');
+  var trigger = document.getElementById('quote');
+  if (!btn || !trigger) return;
+  if (!('IntersectionObserver' in window)) { btn.classList.add('show'); return; }
+  new IntersectionObserver(function (entries) {
+    btn.classList.toggle('show', entries[0].isIntersecting);
+  }, { threshold: 0.05 }).observe(trigger);
+})();
+
+/* Services card scroll animation */
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cards = document.querySelectorAll('.svc-card');
+  if (reduced || !('IntersectionObserver' in window)) {
+    cards.forEach(function (c) { c.classList.add('visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var card = entry.target;
+      var i = parseInt(card.getAttribute('data-svc') || '0', 10);
+      card.style.animationDelay = (i * 90) + 'ms';
+      card.classList.add('visible');
+      observer.unobserve(card);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  cards.forEach(function (card, i) {
+    card.setAttribute('data-svc', i);
+    observer.observe(card);
+  });
 })();
 </script>
 
